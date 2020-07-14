@@ -16,7 +16,7 @@ Users call the application and the audio from the call is streamed to the applic
 
 ## Requirements
 
-This app requires Ruby v2.7. 
+This app requires Ruby v2.7 or greater.
 
 ## Installation
 
