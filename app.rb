@@ -1,7 +1,6 @@
 require 'faye/websocket'
 require 'json'
 require "wavefile"
-require 'byebug'
 include WaveFile
 
 EXTERNAL_WS_URL = 'ws://example.com/cable'
@@ -15,14 +14,16 @@ App = lambda do |env|
     ws = Faye::WebSocket.new(env)
 
     ws.on :message do |event|
-      puts "Receiving WebSockets data..."
-
-      @call_data << event.data unless event.data.include?('event')
-      # ws.send(event.data)
+      if event.data.is_a?(Array)
+        @call_data.append(event.data.pack('c*').unpack('s*'))
+      else
+        puts event.data
+      end
     end
 
     ws.on :close do |event|
-      create_wav_file(@call_data)
+      puts 'WebSocket connection closed...'
+      create_wav_file(@call_data.flatten)
     end
 
     ws.rack_response
@@ -42,7 +43,7 @@ App = lambda do |env|
           {
             "type": "websocket",
             "uri": "#{EXTERNAL_WS_URL}",
-            "content-type": "audio/116;rate=16000",
+            "content-type": "audio/l16;rate=16000",
           }
         ]
       }
@@ -56,9 +57,9 @@ App = lambda do |env|
 end
 
 def create_wav_file(data)
-  buffer = Buffer.new(data.flatten, Format.new(:stereo, :pcm_16, 16000)) 
+  buffer = Buffer.new(data, Format.new(:mono, :pcm_16, 16000)) 
   puts "Audio Buffer Created..."
-  writer = Writer.new("my_file.wav", Format.new(:stereo, :pcm_16, 16000))
+  writer = Writer.new("my_file.wav", Format.new(:mono, :pcm_16, 16000))
   puts "New Audio File Created..."
   puts "Writing to the Buffer..."
   writer.write(buffer)
