@@ -16,16 +16,22 @@ Users call the application and the audio from the call is streamed to the applic
 
 ## Requirements
 
-This app requires Ruby v2.7 or greater.
+This app requires Ruby v2.7 or greater and the following gems:
+
+* [WaveFile](https://github.com/jstrait/wavefile)
+* [Faye-WebSocket](https://github.com/faye/faye-websocket-ruby)
+* [JSON](https://github.com/flori/json)
+* [Rack](https://github.com/rack/rack)
+* [Thin](https://github.com/macournoyer/thin)
+
+These are all included in the project's `Gemfile` and will be installed when you run `bundle install` from the command line.
 
 ## Installation
 
 Once you clone the repository, make sure its dependencies are installed on your local machine:
 
 ```bash
-$ gem install wavefile
-$ gem install faye-websocket
-$ gem install json
+$ bundle install
 ```
 
 ## Usage
@@ -41,10 +47,10 @@ Next, open up the `app.rb` file in your preferred code editor and add an externa
 Once, you have done so, you can run the application by executing the following command:
 
 ```bash
-$ thin start -R app.rb -p 9292
+$ bundle exec rackup app.rb
 ```
 
-The above command will begin a [thin](https://github.com/macournoyer/thin) web server running on port 9292.
+The above command will begin a web server running on port 9292.
 
 The application is now ready to call. Once you hang up the call, you can visit `localhost:9292` in your browser and play the audio that was recorded via the WebSocket connection.
 
