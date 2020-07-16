@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Ruby Vonage WebSockets Demo</title>
+  </head>
+  <body>
+    <h1>Vonage WebSockets + Ruby == &hearts;</h1>
+    <p>Welcome to the Vonage WebSockets demo in Ruby</p>  
+    <h2>Your Audio To Playback</h2>
+    <p>Once you have finished your call, your audio will be available to playback from here.</p>
+    <div id="audio-status">
+      <%= @call_status %>
+      <br />
+      <% if @file %>
+        <audio
+          controls
+          src="recording/<%= @file %>">
+            Your browser does not support the
+            <code>audio</code> element.
+        </audio>
+      <% end %>
+    </div>
+  </body>
+</html>
