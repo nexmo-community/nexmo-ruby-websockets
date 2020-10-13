@@ -22,7 +22,7 @@ This app requires Ruby v2.7 or greater and the following gems:
 * [Faye-WebSocket](https://github.com/faye/faye-websocket-ruby)
 * [JSON](https://github.com/flori/json)
 * [Rack](https://github.com/rack/rack)
-* [Thin](https://github.com/macournoyer/thin)
+* [Puma](https://github.com/puma/puma)
 
 These are all included in the project's `Gemfile` and will be installed when you run `bundle install` from the command line.
 
@@ -48,6 +48,12 @@ Once, you have done so, you can run the application by executing the following c
 
 ```bash
 $ bundle exec rackup app.rb
+```
+
+To run in *`production`* mode:
+
+```bash
+$ bundle exec rackup -s puma app.rb -E production
 ```
 
 The above command will begin a web server running on port 9292.

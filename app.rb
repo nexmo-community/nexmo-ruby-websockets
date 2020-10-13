@@ -9,7 +9,7 @@ include WaveFile
 EXTERNAL_WS_URL = 'ws://example.com/cable'
 
 def create_wav_file(data, file_name)
-  buffer = Buffer.new(data, Format.new(:mono, :pcm_16, 16000)) 
+  buffer = Buffer.new(data, Format.new(:mono, :pcm_16, 16000))
   puts "Audio Buffer Created..."
   writer = Writer.new(file_name, Format.new(:mono, :pcm_16, 16000))
   puts "New Audio File Created..."
@@ -26,9 +26,7 @@ def erb(template)
   ERB.new(File.read(path)).result(binding)
 end
 
-
-Rack::Handler::Thin.run(Rack::Builder.new {
-  Faye::WebSocket.load_adapter('thin')
+App = Rack::Builder.new {
   use(Rack::Static, urls: ["/recording"], root: 'recording')
 
   map('/cable') do
@@ -37,7 +35,7 @@ Rack::Handler::Thin.run(Rack::Builder.new {
         puts "WebSockets connection opened..."
         @call_data = []
         ws = Faye::WebSocket.new(env)
-    
+
         ws.on :message do |event|
           if event.data.is_a?(Array)
             @call_data.append(event.data.pack('c*').unpack('s*'))
@@ -45,7 +43,7 @@ Rack::Handler::Thin.run(Rack::Builder.new {
             puts event.data
           end
         end
-    
+
         ws.on :close do |event|
           puts 'WebSocket connection closed...'
           create_wav_file(@call_data.flatten, 'recording/recording.wav')
@@ -54,12 +52,12 @@ Rack::Handler::Thin.run(Rack::Builder.new {
             [ 302, {'Location' =>'/'}, [[erb("views/index.html.erb")]] ]
           })
         end
-    
+
         ws.rack_response
       end
     })
   end
-  
+
   map('/') do
     if File.exist?('recording.wav')
       @call_status = 'Audio Loaded!'
@@ -87,7 +85,7 @@ Rack::Handler::Thin.run(Rack::Builder.new {
           ]
         }
       ].to_json
-  
+
       [200, { 'Content-Type' => 'application/json' }, [ncco]]
     })
   end
@@ -97,4 +95,4 @@ Rack::Handler::Thin.run(Rack::Builder.new {
       [200, { 'Content-Type' => 'text/html'}, ['']]
     })
   end
-}, Port: 9292)
+}

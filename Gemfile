@@ -4,6 +4,6 @@ gem 'wavefile'
 gem 'faye-websocket'
 gem 'json'
 gem 'rack'
-gem 'thin'
+gem 'puma'
 
 gem 'byebug'
